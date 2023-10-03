@@ -6,22 +6,30 @@ public class Janela extends JFrame {
 
     /* JPanel é o tela */
     private JPanel tela;
+    private int fps = 1000 / 50; /* 50 */
+    private int contador;
+    private boolean anima = true;
 
     public Janela() {
 
         tela = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) { /* Graphics é o pincel */
+                //g.setColor(Color.WHITE);
+                //g.fillRect(0, 0, tela.getWidth(), tela.getHeight());
+
                 g.setColor(Color.BLUE);
-                g.drawLine(0, 240, 640, 240);
-                g.drawRect(10, 25, 20, 20);
-                g.drawOval(30, 20, 40, 30);
+                g.drawLine(0, 240 + contador, 640, 240 + contador);
+                g.drawRect(10, 25 + contador, 20, 20);
+                g.drawOval(30 + contador, 20, 40, 30);
+
                 g.setColor(Color.YELLOW);
-                g.drawLine(320, 0, 320, 480);
-                g.fillRect(110, 125, 120, 120);
-                g.fillOval(230, 220, 240, 230);
+                g.drawLine(320 - contador, 0, 320 - contador, 480);
+                g.fillRect(110, 125, 120 - contador, 120 - contador);
+                g.fillOval(230, 220, 240 + contador, 230);
+
                 g.setColor(Color.RED);
-                g.drawString("Eu seria um ótimo Score!", 5, 10);
+                g.drawString("Eu seria um ótimo Score! " + contador, 5, 10);
             }
         };
 
@@ -32,8 +40,29 @@ public class Janela extends JFrame {
         setVisible(true);
     }
 
+    public void iniciaAnimacao() {
+        long prxAtualizacao = 0;
+
+        while (anima) {
+
+            if (System.currentTimeMillis() >= prxAtualizacao) {
+                contador++;
+                tela.repaint();
+
+                prxAtualizacao = System.currentTimeMillis() + fps;
+
+                if (contador == 100) {
+                    anima = false;
+                }
+            }
+
+        }
+    }
+
     public static void main(String[] args) {
-        new Janela();
+        // new Janela();
+        Janela anima = new Janela();
+        anima.iniciaAnimacao();
     }
 
 }
