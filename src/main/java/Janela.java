@@ -8,7 +8,7 @@ public class Janela extends JFrame {
 
     /* JPanel é o tela */
     private JPanel tela;
-    private int fps = 1000 / 50; /* 20 */
+    private final int FPS = 1000 / 50; /* 20 */
     private int contador;
     private boolean anima = true;
     private int posicaoX;
@@ -26,9 +26,9 @@ public class Janela extends JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 int tecla = e.getKeyCode();
-                switch(tecla){
+                switch (tecla) {
                     case KeyEvent.VK_ESCAPE:
-                        anima=false;
+                        anima = false;
                         dispose(); /* Para fechar a janela */
                         break;
                     case KeyEvent.VK_UP: /* Seta para CIMA */
@@ -55,8 +55,15 @@ public class Janela extends JFrame {
         tela = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) { /* Graphics é o pincel */
-                //g.setColor(Color.WHITE);
-                //g.fillRect(0, 0, tela.getWidth(), tela.getHeight());
+                g.setColor(Color.WHITE);
+                g.fillRect(0, 0, tela.getWidth(), tela.getHeight());
+
+                int x = tela.getWidth() / 2 - 20 + posicaoX;
+                int y = tela.getHeight() / 2 - 20 + posicaoY;
+
+                g.setColor(Color.BLUE);
+                g.fillRect(x, y, 40, 40);
+                g.drawString("Agora estou em " + x + "x" + y, 10, 20);
 
                 g.setColor(Color.BLUE);
                 g.drawLine(0, 240 + contador, 640, 240 + contador);
@@ -90,11 +97,11 @@ public class Janela extends JFrame {
                 contador++;
                 tela.repaint();
 
-                prxAtualizacao = System.currentTimeMillis() + fps;
+                prxAtualizacao = System.currentTimeMillis() + FPS;
 
-                if (contador == 100) {
+                /*if (contador == 100) {
                     anima = false;
-                }
+                }*/
             }
 
         }
