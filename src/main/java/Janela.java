@@ -1,16 +1,56 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /* JFrame é a Moldura */
 public class Janela extends JFrame {
 
     /* JPanel é o tela */
     private JPanel tela;
-    private int fps = 1000 / 50; /* 50 */
+    private int fps = 1000 / 50; /* 20 */
     private int contador;
     private boolean anima = true;
+    private int posicaoX;
+    private int posicaoY;
 
     public Janela() {
+
+        /* Interação com teclado e mouse */
+        super.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                int tecla = e.getKeyCode();
+                switch(tecla){
+                    case KeyEvent.VK_ESCAPE:
+                        anima=false;
+                        dispose(); /* Para fechar a janela */
+                        break;
+                    case KeyEvent.VK_UP: /* Seta para CIMA */
+                        posicaoY--;
+                        break;
+                    case KeyEvent.VK_DOWN: /* Seta para BAIXO */
+                        posicaoY++;
+                        break;
+                    case KeyEvent.VK_LEFT: /* Seta para ESQUERDA */
+                        posicaoX--;
+                        break;
+                    case KeyEvent.VK_RIGHT: /* Seta para DIREITA */
+                        posicaoX++;
+                        break;
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
 
         tela = new JPanel() {
             @Override
@@ -40,6 +80,7 @@ public class Janela extends JFrame {
         setVisible(true);
     }
 
+    /* Loop do jogo */
     public void iniciaAnimacao() {
         long prxAtualizacao = 0;
 
