@@ -2,55 +2,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /* JFrame é a Moldura */
 public class Janela extends JFrame {
 
-    /* JPanel é o tela */
-    private JPanel tela;
+    private JPanel tela; /* JPanel é a tela */
     private final int FPS = 1000 / 50; /* 20 */
     private int contador;
     private boolean anima = true;
     private int posicaoX;
     private int posicaoY;
+    private boolean[] controleTecla = new boolean[4];
+    private Point mouseClick = new Point();
 
     public Janela() {
-
-        /* Interação com teclado e mouse */
-        super.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                int tecla = e.getKeyCode();
-                switch (tecla) {
-                    case KeyEvent.VK_ESCAPE:
-                        anima = false;
-                        dispose(); /* Para fechar a janela */
-                        break;
-                    case KeyEvent.VK_UP: /* Seta para CIMA */
-                        posicaoY--;
-                        break;
-                    case KeyEvent.VK_DOWN: /* Seta para BAIXO */
-                        posicaoY++;
-                        break;
-                    case KeyEvent.VK_LEFT: /* Seta para ESQUERDA */
-                        posicaoX--;
-                        break;
-                    case KeyEvent.VK_RIGHT: /* Seta para DIREITA */
-                        posicaoX++;
-                        break;
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-        });
 
         tela = new JPanel() {
             @Override
@@ -80,11 +47,121 @@ public class Janela extends JFrame {
             }
         };
 
-        super.getContentPane().add(tela);
+        super.getContentPane().add(tela); /* Adiciono o JPanel (Tela) no JFrame (Moldura) */
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(640, 480);
         setVisible(true);
+
+        /*
+         * Interação com TECLADO e MOUSE
+         * */
+
+        /*
+         * MOUSE
+         * */
+        tela.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                mouseClick = e.getPoint();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                /*
+                 * Mouse entrou da tela
+                 * */
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                /*
+                 * Mouse saiu da tela
+                 * */
+            }
+        });
+
+        /*
+         * TECLADO
+         * */
+        super.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                //int tecla = e.getKeyCode();
+                setaTecla(e.getKeyCode(), true);
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                setaTecla(e.getKeyCode(), false);
+            }
+        });
+
+    }
+
+    /* Controle do jogo */
+    public void setaTecla(int tecla, boolean pressionada) {
+        switch (tecla) {
+            case KeyEvent.VK_ESCAPE: /* Tecla ESC para fechar a janela */
+                anima = false;
+                dispose();
+                break;
+            case KeyEvent.VK_UP: /* Seta para CIMA */
+                //posicaoY--;
+                controleTecla[0] = pressionada;
+                break;
+            case KeyEvent.VK_DOWN: /* Seta para BAIXO */
+                //posicaoY++;
+                controleTecla[1] = pressionada;
+                break;
+            case KeyEvent.VK_LEFT: /* Seta para ESQUERDA */
+                //posicaoX--;
+                controleTecla[2] = pressionada;
+                break;
+            case KeyEvent.VK_RIGHT: /* Seta para DIREITA */
+                //posicaoX++;
+                controleTecla[3] = pressionada;
+                break;
+        }
+    }
+
+    private void atualizaJogo() {
+
+        /*
+         * Controle com o MOUSE
+         * */
+        posicaoX = mouseClick.x;
+        posicaoY = mouseClick.y;
+
+        /*
+         * Controle com o TECLADO
+         * */
+        if (controleTecla[0]) { /* EIXO Y */
+            posicaoY--;
+        } else if (controleTecla[1]) {
+            posicaoY++;
+        }
+
+        if (controleTecla[2]) { /* EIXO X */
+            posicaoX--;
+        } else if (controleTecla[3]) {
+            posicaoX++;
+        }
     }
 
     /* Loop do jogo */
@@ -95,6 +172,7 @@ public class Janela extends JFrame {
 
             if (System.currentTimeMillis() >= prxAtualizacao) {
                 contador++;
+                atualizaJogo();
                 tela.repaint();
 
                 prxAtualizacao = System.currentTimeMillis() + FPS;
